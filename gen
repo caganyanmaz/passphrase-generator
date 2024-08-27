@@ -1,0 +1,49 @@
+#!/bin/python
+import sys
+import secrets
+import argparse
+
+WORD_COUNTS = [5, 6, 7, 8]
+
+def main():
+    parser = argparse.ArgumentParser(prog='Passphrase generator', description='Generates passphrases given a word list', epilog='Just look at the code mate')
+    parser.add_argument('-f', '--filename', default='words.txt')
+    parser.add_argument('-c', '--word-count', type=int)
+    parser.add_argument('-u', '--uppercase-letter', action='store_true')
+    parser.add_argument('-n', '--numbers', action='store_true')
+    parser.add_argument('-s', '--special-characters', action='store_true')
+    args = parser.parse_args()
+    word_count = args.word_count
+    if word_count is None:
+        word_count = secrets.choice(WORD_COUNTS)
+    with open(args.filename, 'r') as file:
+        words = file.read().splitlines()
+    passphrase = create_passphrase_without_repetition(word_count, words)
+    if args.uppercase_letter:
+        passphrase = passphrase[0].upper() + passphrase[1:]
+    if args.numbers:
+        passphrase += "0"
+    if args.special_characters:
+        passphrase += "!"
+    print(passphrase)
+
+
+def create_passphrase_without_repetition(word_count, words):
+    selected_words = []
+    while len(selected_words) < word_count:
+        current_word = secrets.choice(words)
+        if current_word not in selected_words:
+            selected_words.append(current_word)
+    return '-'.join(selected_words)
+
+
+def create_passphrase_with_repetition(word_count, words):
+    selected_words = []
+    for i in range(word_count):
+        current_word = secrets.choice(words)
+        selected_words.append(current_word)
+    return selected_words
+    
+
+if __name__ == '__main__':
+    main()
