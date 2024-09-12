@@ -1,9 +1,11 @@
 #!/bin/python
 import sys
-import secrets
+import secrets as s
 import argparse
 
 WORD_COUNTS = [5, 6, 7, 8]
+
+secrets = s.SystemRandom()
 
 def main():
     parser = argparse.ArgumentParser(prog='Passphrase generator', description='Generates passphrases given a word list', epilog='Just look at the code mate')
